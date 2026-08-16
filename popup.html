@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zalo Realtime Scraper</title>
+<style>
+  :root {
+    --primary: #0068ff;
+    --primary-dark: #0052cc;
+    --danger: #ff3b30;
+    --danger-dark: #d92b20;
+    --success: #34c759;
+    --gray-50: #f7f8fa;
+    --gray-100: #eef1f5;
+    --gray-200: #e2e6ea;
+    --gray-400: #9aa4b2;
+    --gray-600: #5b6472;
+    --gray-800: #1f2430;
+    --radius: 10px;
+    --radius-sm: 7px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    width: 340px;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--gray-800);
+    background: var(--gray-50);
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+  }
+  header .icon {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background: rgba(255,255,255,0.18);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  header h1 { font-size: 14.5px; margin: 0; font-weight: 700; }
+  header p { margin: 2px 0 0; font-size: 11px; opacity: 0.85; }
+
+  main { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .card-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray-600);
+    margin: 0 0 10px;
+  }
+
+  /* ---- trạng thái ---- */
+  .status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .status-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .status-dot {
+    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    background: var(--gray-400); transition: background .2s, box-shadow .2s;
+  }
+  .status-dot.on { background: var(--success); box-shadow: 0 0 0 3px rgba(52,199,89,0.16); }
+  .status-text { font-weight: 700; font-size: 13.5px; line-height: 1.3; }
+  .status-sub {
+    font-size: 10.5px; color: var(--gray-600); margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ---- toggle switch dùng chung ---- */
+  .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .slider {
+    position: absolute; inset: 0; cursor: pointer;
+    background: var(--gray-200); border-radius: 22px; transition: background .2s;
+  }
+  .slider::before {
+    content: ""; position: absolute; width: 18px; height: 18px; left: 2px; top: 2px;
+    background: #fff; border-radius: 50%; transition: transform .2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider { background: var(--success); }
+  .switch input:checked + .slider::before { transform: translateX(18px); }
+
+  /* ---- input fields ---- */
+  .field { margin-bottom: 10px; }
+  .field:last-of-type { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 11.5px; font-weight: 600; color: var(--gray-600);
+    margin-bottom: 4px;
+  }
+  .field input[type="text"], .field input[type="number"] {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm); font-size: 13px; background: var(--gray-50);
+    transition: border-color .15s, background .15s; font-family: inherit;
+  }
+  .field input:focus { outline: none; border-color: var(--primary); background: #fff; }
+  .field-hint { font-size: 10.5px; color: var(--gray-400); margin-top: 4px; line-height: 1.4; }
+
+  /* ---- hàng công tắc tính năng ---- */
+  .feature-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 0;
+  }
+  .feature-row + .feature-row { border-top: 1px solid var(--gray-100); }
+  .feature-text { min-width: 0; }
+  .feature-title { font-weight: 600; font-size: 12.5px; }
+  .feature-desc { font-size: 10.5px; color: var(--gray-600); margin-top: 2px; line-height: 1.4; }
+  .badge-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; color: var(--primary);
+    background: rgba(0,104,255,0.1); padding: 1px 6px; border-radius: 20px; margin-left: 5px;
+    text-transform: uppercase; letter-spacing: .02em; vertical-align: middle;
+  }
+
+  /* ---- nút hành động ---- */
+  .btn {
+    width: 100%; padding: 10px; border: none; border-radius: var(--radius-sm);
+    font-weight: 700; font-size: 13px; cursor: pointer; color: #fff;
+    transition: background .15s, transform .05s; font-family: inherit;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--primary); }
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  .link-row { text-align: center; margin-top: 10px; }
+  .link-row a { font-size: 11px; color: var(--primary); text-decoration: none; }
+  .link-row a:hover { text-decoration: underline; }
+
+  footer { padding: 2px 14px 14px; }
+  .toast {
+    font-size: 11px; text-align: center; color: var(--gray-600); min-height: 14px;
+    font-weight: 500;
+  }
+  .toast.error { color: var(--danger); font-weight: 700; }
+  .toast.success { color: var(--success); font-weight: 700; }
+
+  .note-block {
+    display: flex; gap: 8px; padding: 10px; margin-top: 10px;
+    background: var(--gray-50); border: 1px dashed var(--gray-200); border-radius: var(--radius-sm);
+    font-size: 10.5px; color: var(--gray-600); line-height: 1.45;
+  }
+  .note-block .note-icon { flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4h16v12H7l-3 3V4z" stroke="white" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="titles">
+    <h1>Zalo Realtime Scraper</h1>
+    <p>Tự động đồng bộ tin nhắn ra webhook</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- Trạng thái + công tắc bật/tắt tổng -->
+  <section class="card">
+    <div class="status-row">
+      <div class="status-left">
+        <span id="statusDot" class="status-dot off"></span>
+        <div style="min-width:0;">
+          <div id="statusText" class="status-text">Đang tải...</div>
+          <div id="statusSub" class="status-sub"></div>
+        </div>
+      </div>
+      <label class="switch" title="Bật / tắt quét">
+        <input type="checkbox" id="mainToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- Cấu hình kết nối -->
+  <section class="card">
+    <div class="card-title">Cấu hình kết nối</div>
+
+    <div class="field">
+      <label for="apiUrl">API Endpoint</label>
+      <input type="text" id="apiUrl" placeholder="https://your-api.com/webhook">
+    </div>
+
+    <div class="field">
+      <label for="interval">Chu kỳ quét (ms)</label>
+      <input type="number" id="interval" placeholder="5000" value="5000" min="1000" step="500">
+      <div class="field-hint" id="intervalHint">= 5 giây · tối thiểu 1000ms</div>
+    </div>
+
+    <button id="btnApply" class="btn btn-primary" type="button">Áp dụng cấu hình</button>
+
+    <div class="link-row" id="webhookLinkRow" style="display:none;">
+      <a id="webhookLink" href="#" target="_blank" rel="noopener">Xem request đến webhook.site ↗</a>
+    </div>
+  </section>
+
+  <!-- Tính năng thu thập -->
+  <section class="card">
+    <div class="card-title">Tính năng thu thập</div>
+
+    <div class="feature-row">
+      <div class="feature-text">
+        <div class="feature-title">Quét tin nhắn văn bản</div>
+        <div class="feature-desc">Trích nội dung chữ trong mỗi tin nhắn.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="featTextScan" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-text">
+        <div class="feature-title">Tự động phân tích file<span class="badge-tag">docx·pdf·txt</span></div>
+        <div class="feature-desc">Mở preview, tải và trích nội dung file đính kèm.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="featFileAnalysis" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-text">
+        <div class="feature-title">Gửi kèm ảnh</div>
+        <div class="feature-desc">Chuyển ảnh trong tin nhắn sang base64.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="featImageSend" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="note-block">
+      <span class="note-icon">ℹ️</span>
+      <span>Các công tắc được lưu lại ngay và áp dụng cho các lượt quét tiếp theo.</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div id="toast" class="toast"></div>
+</footer>
+
+<script src="popup.js"></script>
+</body>
+</html>

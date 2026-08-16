@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Zalo Realtime Message Scraper & AI Assistant",
+  "version": "1.0.0",
+  "author": "Leon Thien",
+  "description": "Tự động quét tin nhắn Zalo Web, trích xuất file Word/PDF và gửi tới endpoint của người dùng.",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.zalo.me/*",
+    "https://*.dlfl.vn/*"
+  ],
+  "optional_host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Zalo Realtime Message Scraper"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.zalo.me/*",
+        "https://zalo.me/*"
+      ],
+      "js": [
+        "mammoth.browser.min.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "mammoth.browser.min.js"
+      ],
+      "matches": [
+        "https://*.zalo.me/*",
+        "https://zalo.me/*"
+      ]
+    }
+  ]
+}
