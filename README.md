@@ -6,16 +6,19 @@ Dự án được xây dựng theo kiến trúc Manifest V3 hiện đại, sử 
 
 ---
 
-## ✨ Tính năng nổi bật
+## ✨ Tính năng đỉnh cao & Khác biệt cốt lõi
 
-| Tính năng | Mô tả |
+Không chỉ dừng lại ở việc chuyển tiếp tin nhắn thô sơ như các thư viện backend thông thường, dự án sở hữu **khả năng tự động hóa khép kín ở tầng Client** với những tính năng độc quyền mạnh mẽ:
+
+| Tính năng | Mô tả chi tiết & Sức mạnh kỹ thuật |
 | :--- | :--- |
-| 📄 **Tự động trích xuất file** | Phát hiện thời gian thực khi bạn mở xem trước file `.docx` và `.pdf` trên Zalo Web, tự động bóc tách nội dung văn bản thuần. |
-| 💬 **Quét tin nhắn thông minh** | Cho phép cấu hình bộ lọc (Filter) để thu thập dữ liệu hội thoại thời gian thực theo nhu cầu. |
-| 🔄 **Chuyển tiếp linh hoạt** | Đóng gói dữ liệu đã trích xuất (text, metadata) thành định dạng JSON và gửi `POST` request đến Endpoint API do người dùng cấu hình. |
-| 🛡️ **Vượt rào bảo mật & Anti-Bot** | Sử dụng Service Worker để thực thi `fetch()` với Cookie/Session Zalo hợp lệ nhằm vượt CORS, tránh lỗi `403 Forbidden`. Kết hợp với Bộ điều phối nhập liệu thông minh để ẩn danh hành vi. |
-| ⚙️ **Điều khiển tính năng độc lập** | Giao diện Popup cung cấp các nút gạt (Toggle Switches) riêng biệt: bật/tắt Quét chữ, Phân tích file, Gửi ảnh mà không ảnh hưởng đến các chức năng khác. |
-| 🔑 **Bảo mật dữ liệu tối đa** | Không hardcode Endpoint hay API Key. Quyền kết nối mạng được cấp động an toàn qua cơ chế `optional_host_permissions`. Không tự động nhấn nút Gửi (Enter) – quyền quyết định cuối cùng hoàn toàn thuộc về bạn. |
+| 🚀 **Tự động hóa & Phân tích File Đỉnh cao** | **Vũ khí độc quyền:** Phát hiện thời gian thực ngay khi người dùng mở giao diện xem trước (Preview) file trên Zalo Web. Hệ thống tự động kích hoạt tải ngầm, parse nội dung chữ thô từ mã nhị phân file Word (`.docx` qua `mammoth.js`) và tệp `PDF`. Giải phóng hoàn toàn gánh nặng xử lý file cho máy chủ Backend (Zero-Server-Config). |
+| 📸 **Xử lý Đa phương tiện sang Base64 cho AI** | **Nâng cấp Multimodal:** Tự động bắt giữ luồng dữ liệu của **Hình ảnh (JPG/PNG)** và **Tin nhắn thoại (Voice/Audio)** trong đoạn chat. Hệ thống lập tức mã hóa các tệp nhị phân này thành chuỗi dữ liệu sạch (**Inline Base64 String**). Cho phép các mô hình LLM thế hệ mới (Gemini, Claude, OpenAI) có thể trực tiếp "nhìn" hình ảnh và "nghe" giọng nói để phân tích mà không cần qua bước xử lý trung gian nào. |
+| 🔄 **Đóng gói Payload & Forward Siêu tốc** | Đóng gói toàn bộ văn bản thô đã trích xuất (`fileText`), dữ liệu đa phương tiện mã hóa (`fileBase64`), tin nhắn thoại, cùng siêu dữ liệu Metadata (ID phòng chat, tên người gửi, thời gian) thành một gói JSON duy nhất và bắn trực tiếp (`POST`) sang Endpoint API tùy chỉnh của bạn. |
+| 💬 **Quét hội thoại thời gian thực** | Tích hợp bộ lọc thông minh (Realtime Engine Filter) cho phép bóc tách cấu trúc DOM tin nhắn liên tục, thu thập chính xác luồng dữ liệu hội thoại theo nhu cầu cấu hình. |
+| 🛡️ **Bypass Anti-Bot & Vượt rào Bảo mật** | Thực thi lệnh `fetch()` trực tiếp tại môi trường đặc quyền *Service Worker (Background Script)* giúp tự động đính kèm Cookie/Session Zalo hợp lệ của chính trình duyệt. **Bẻ gãy hoàn toàn lỗi chặn file `403 Forbidden`** và chính sách chặn CORS nghiêm ngặt của Zalo Web. |
+| ⚙️ **Bảng điều khiển độc lập (Popup UI)** | Thiết kế Modern Toggle Switches hiện đại, cho phép người dùng bật/tắt riêng lẻ các luồng tính năng (Quét chữ, Phân tích file, Gửi ảnh/Voice) một cách linh hoạt mà không làm gián đoạn hệ thống. |
+| 🔑 **Bảo mật & Kiểm soát Tuyệt đối** | Nói không với hardcode! Toàn bộ Endpoint/API Key được lưu trữ cục bộ an toàn (`chrome.storage.local`) và cấp quyền động qua `optional_host_permissions`. Đặc biệt, **không tự động nhấn nút Gửi (Enter)** — quyền quyết định cuối cùng luôn thuộc về người dùng thật để đảm bảo an toàn tài khoản 100%. |
 
 ---
 
@@ -180,3 +183,15 @@ Dự án được phát triển theo tinh thần Mã nguồn mở (Open-Source).
 * **Tác giả:** Leon Thien
 * **Email:** leonthien24@gmail.com
 * **Báo lỗi & Đóng góp:** Tạo thẻ thảo luận trực tiếp tại mục [GitHub Issues](https://github.com/thienbaodeptrai/zalo-message-webhook-forwarder/issues)
+
+---
+## ⚠️ Miễn trừ trách nhiệm (Disclaimer)
+
+> 🔴 **QUY ĐỊNH BẮT BUỘC TRƯỚC KHI SỬ DỤNG:**
+>
+> 1. **Dự án không chính thức (UNOFFICIAL):** Dự án này là một tiện ích mở rộng không chính thức được phát triển thuần túy cho mục đích nghiên cứu học thuật, sử dụng cá nhân và tự động hóa hiệu suất công việc. Dự án hoàn toàn không liên quan, không đại diện cho, không được tài trợ hoặc xác nhận bởi Zalo hoặc bất kỳ nhà cung cấp dịch vụ API/LLM nào khác.
+> 2. **Trách nhiệm về dữ liệu:** Người sử dụng tự chịu hoàn toàn trách nhiệm về việc cấu hình Endpoint, bảo mật API Key/Token, cũng như tính nhạy cảm của dữ liệu được thu thập, truyền đi, xử lý hoặc lưu trữ. Tác giả không chịu bất kỳ trách nhiệm nào đối với việc người dùng vô tình hoặc cố ý gửi dữ liệu nhạy cảm, thông tin cá nhân, tài liệu có bản quyền hoặc dữ liệu bảo mật của bên thứ ba đến Endpoint riêng hoặc các dịch vụ bên ngoài.
+> 3. **Cung cấp theo nguyên trạng (AS IS):** Tiện ích mở rộng này được cung cấp theo nguyên trạng (AS IS), không kèm theo bất kỳ đảm bảo nào về tính chính xác, tính liên tục của dịch vụ, khả năng tương thích vĩnh viễn với mọi phiên bản giao diện Zalo Web hoặc các thay đổi đột ngột trong cơ chế mã nguồn của website bên thứ ba. Người dùng được khuyến nghị nên tự kiểm tra mã nguồn, rà soát quyền truy cập và bảo mật Endpoint trước khi đưa vào vận hành với dữ liệu quan trọng.
+> 4. **Rủi ro tài khoản (Anti-ban):** Việc tự động hóa giao diện có thể vi phạm điều khoản dịch vụ của Zalo. Tác giả không chịu trách nhiệm dưới mọi hình thức nếu tài khoản Zalo của người dùng bị hạn chế tính năng hoặc bị khóa tạm thời/vĩnh viễn. Hãy luôn sử dụng công cụ này một cách có trách nhiệm và tuân thủ các quy định pháp luật hiện hành.
+Zalo Web hoặc các thay đổi trong cơ chế của website bên thứ ba. Người dùng nên tự kiểm tra mã nguồn, quyền truy cập và bảo mật Endpoint trước khi sử dụng với dữ liệu quan trọng.
+Việc sử dụng có thể vi phạm điều khoản dịch vụ của Zalo. Tác giả không chịu trách nhiệm nếu tài khoản bị khóa. Hãy sử dụng có trách nhiệm
