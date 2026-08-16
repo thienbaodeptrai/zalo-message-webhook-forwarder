@@ -140,7 +140,7 @@ Mỗi khi có dữ liệu mới (tin nhắn văn bản hoặc tệp tin văn ph�
 ## 🏗️ Cấu trúc thư mục dự án
 
 ```text
-zalo-message-webhook-forwarder/
+zalo-webhook-extension/
 ├── manifest.json            # File cấu hình Chrome Extension Manifest V3
 ├── background.js            # Service Worker xử lý fetch ngầm, truyền tin và bypass CORS
 ├── content.js               # Content Script nhúng trực tiếp vào trang Zalo để quét DOM
