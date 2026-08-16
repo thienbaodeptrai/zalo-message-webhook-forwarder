@@ -32,6 +32,67 @@ Khi nhận phản hồi dữ liệu ngược từ Endpoint, extension sẽ tự 
 
 ---
 
+## 📊 Cấu trúc dữ liệu gửi đến Endpoint (JSON Payload Schema)
+
+Mỗi khi có dữ liệu mới (tin nhắn văn bản hoặc tệp tin văn phòng), extension sẽ đóng gói thông tin dưới định dạng JSON chuẩn mã hóa UTF-8 và thực hiện lệnh `POST` đến Endpoint API của bạn. 
+
+Đối với các trường liên quan đến nội dung tệp tin (`fileText`, `fileBase64`, `fileMimeType`), hệ thống sẽ tự động tối ưu: Trả về **`null` nếu đó là tin nhắn chữ thuần túy**, hoặc **trả về chuỗi văn bản thô/chuỗi dữ liệu mã hóa Inline Base64** tương ứng tùy thuộc vào định dạng file thu thập được.
+
+### 📝 Ví dụ gói tin JSON mẫu (Payload Example):
+```json
+{
+  "convId": "5797335599570623765",
+  "convName": "My Documents",
+  "convType": "personal",
+  "isGroup": false,
+  "isVerified": false,
+  "time": "2026-08-16T11:20:19.577Z",
+  "messages": [
+    {
+      "msgId": "8156288959334@1786799735262_0_5797335599570623765",
+      "isMe": true,
+      "senderName": "",
+      "sendTime": "20:15",
+      "type": "text",
+      "content": "dawg",
+      "images": [],
+      "voice": null,
+      "fileText": null,
+      "fileBase64": null,
+      "fileMimeType": null
+    }
+  ]
+}
+```
+
+### 🔍 Giải thích chi tiết các trường dữ liệu:
+
+* **Thông tin phòng chat (Conversation Metadata):**
+  * `convId` (*String*): ID định danh duy nhất của cuộc hội thoại trên hệ thống Zalo.
+  * `convName` (*String*): Tên của phòng chat hoặc tên của người đang nhắn tin cùng.
+  * `convType` (*String*): Phân loại cuộc hội thoại (`personal` cho chat đôi, `group` cho phòng chat nhóm).
+  * `isGroup` (*Boolean*): Trạng thái xác định xem đây có phải là nhóm hay không.
+  * `isVerified` (*Boolean*): Trạng thái xác thực tài khoản (Tích vàng doanh nghiệp OA).
+  * `time` (*String*): Mốc thời gian hệ thống ghi nhận gói tin theo chuẩn ISO 8601.
+
+* **Danh sách tin nhắn (Messages Array):**
+  * `msgId` (*String*): ID định danh duy nhất của từng tin nhắn cụ thể.
+  * `isMe` (*Boolean*): `true` nếu tin nhắn do chính bạn gửi đi, `false` nếu do người khác gửi đến.
+  * `senderName` (*String*): Tên người gửi tin nhắn (Trả về chuỗi rỗng `""` nếu `isMe` là `true`).
+  * `sendTime` (*String*): Thời gian gửi hiển thị trên giao diện Zalo (Ví dụ: `"20:15"`).
+  * `type` (*String*): Loại tin nhắn (`text`, `file`, `image`, `voice`).
+  * `content` (*String*): Nội dung chữ thuần của tin nhắn chat.
+  * `images` (*Array*): Mảng chứa danh sách chuỗi Base64 của các hình ảnh đính kèm (Mặc định là mảng rỗng `[]` nếu không phải tin ảnh).
+  * `voice` (*String/Null*): Chuỗi dữ liệu âm thanh mã hóa (Trả về `null` nếu không có tin nhắn thoại).
+
+* **Cơ chế xử lý tài liệu đính kèm (File Modality States):**
+  * `fileText` (*String/Null*): Trích xuất toàn bộ văn bản thô (Plain Text) bên trong tệp tin Word (`.docx`) sau khi parse thành công qua thư viện `mammoth.js`. Trả về `null` nếu tin nhắn không chứa file Word.
+  * `fileBase64` (*String/Null*): Chuỗi mã hóa nhị phân dữ liệu sạch (**Inline Base64 String**) của các tệp tin phức tạp như tệp PDF (`.pdf`), hình ảnh hoặc âm thanh để hệ thống API/LLM bên ngoài có thể trực tiếp xử lý cấu trúc gốc. Trả về `null` đối với tin nhắn văn bản thông thường.
+  * `fileMimeType` (*String/Null*): Định dạng định danh internet của tệp tin đính kèm (Ví dụ: `"application/pdf"`, `"application/vnd.openxmlformats-officedocument.wordprocessingml.document"`). Trả về `null` nếu không có file.
+
+
+---
+
 ## 🛠️ Hướng dẫn cài đặt & Sử dụng
 
 ### 📥 1. Cài đặt Extension (Chế độ nhà phát triển)
