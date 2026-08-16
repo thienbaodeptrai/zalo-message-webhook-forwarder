@@ -118,4 +118,4 @@ Dự án được phát triển theo tinh thần Mã nguồn mở (Open-Source).
 
 * **Tác giả:** Leon Thien
 * **Email:** leonthien24@gmail.com
-* **Báo lỗi & Đóng góp:** Tạo thẻ thảo luận trực tiếp tại mục [GitHub Issues](https://github.com/thienbaodeptrai/zalo-message-webhook-forwarder/issue)
+* **Báo lỗi & Đóng góp:** Tạo thẻ thảo luận trực tiếp tại mục [GitHub Issues](https://github.com/thienbaodeptrai/zalo-message-webhook-forwarder/issues)
