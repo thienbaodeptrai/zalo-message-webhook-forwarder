@@ -102,7 +102,7 @@ Mỗi khi có dữ liệu mới (tin nhắn văn bản hoặc tệp tin văn ph�
 
 * **Bước 1: Tải mã nguồn về máy**
   ```bash
-  git clone https://github.com/thienbaodeptrai/zalo-message-webhook-forwarder.git
+  git clone https://github.com/thienbaodeptrai/zalo-webhook-extension.git
   ```
   *(Hoặc bạn có thể tải trực tiếp file mã nguồn dạng ZIP về máy và giải nén).*
 
