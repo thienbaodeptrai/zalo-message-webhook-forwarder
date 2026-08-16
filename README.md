@@ -1,4 +1,4 @@
-# 🔄 Zalo Data to Custom Endpoint Forwarder
+# 🔄 Zalo Data to Custom Endpoint Forwarder [UNOFFICIAL]
 
 Một tiện ích mở rộng dành cho trình duyệt Chrome (**Chrome Extension - Manifest V3**) hoạt động trên nền tảng Zalo Web (`https://zalo.me`). Tiện ích này đóng vai trò như một cầu nối dữ liệu tự động, giúp trích xuất nội dung cuộc hội thoại, bóc tách tệp tin văn phòng và chuyển tiếp (forward) dữ liệu thô đến một **Endpoint API tùy chỉnh** (như Webhook, Server riêng, hoặc các LLM API như Gemini, OpenAI) do bạn tự thiết lập.
 
